@@ -1,0 +1,167 @@
+//  just a simple test.
+
+class test
+{
+	float speed;
+	float angle;
+	int type;
+
+	void INIT()
+	{
+		angle = 0;
+		speed = 2;
+		type = 2;
+	}
+
+	void run()
+	{
+		int num_children = 3;
+
+		float offs = 0;
+
+		while (1) {
+			float a = angle;
+			float da = 360./num_children;
+
+			int i;
+
+			for (i = 0; i < num_children; i++) {
+				spawn circle_spawner(a);
+				a += da;
+			}
+
+			for (i = 0; i < 80; i++) {
+				angle += 3;
+				yield;
+			}
+		}
+	}
+}
+
+class circle_spawner
+{
+	int type;
+	float speed;
+	float angle;
+
+	void INIT(float angle_)
+	{
+		speed = 10;
+		angle = angle_;
+		type = 3;
+	}
+
+	void spawn_circle(float angle)
+	{
+		int i, num_children = 3;
+
+		float da = 360./num_children;
+
+		float a = angle, f = 1.01;
+
+		for (i = 0; i < num_children; i++) {
+			spawn simple(a, 0., 3, f);
+			a += da;
+			f *= 1.02;
+		}
+
+		a = angle + .5*da;
+
+		for (i = 0; i < num_children; i++) {
+			spawn tri_way(a, 1);
+			a += da;
+		}
+	}
+
+	void run()
+	{
+		int i;
+
+		float angle_offs = 0;
+
+		for (i = 0; i < 10; i++) {
+			angle += 3;
+			yield;
+		}
+
+		speed *= .8;
+
+		for (i = 0; i < 10; i++) {
+			int j;
+
+			for (j = 0; j < 3; j++) {
+				angle += 7;
+				yield;
+			}
+
+			spawn_circle(angle_offs);
+
+			angle_offs += 12;
+		}
+
+		while (1)
+			yield;
+	}
+}
+
+class tri_way
+{
+	int type;
+	float speed;
+	float angle;
+
+	void INIT(float angle_, int type_)
+	{
+		angle = angle_;
+		speed = 3;
+		type = type_;
+	}
+
+	void
+	run()
+	{
+		int i;
+
+		for (i = 0; i < 30; i++)
+			yield;
+
+		spawn simple(angle, -2., 1, 1.02);
+		spawn simple(angle, 0., 0, 1.01);
+		spawn simple(angle, 2., 1, 1.02);
+	}
+}
+
+class simple
+{
+	int type;
+	float speed;
+	float angle;
+	float delta_angle;
+	float speed_factor;
+
+	void INIT(float angle_, float delta_angle_, int type_, float speed_factor_)
+	{
+		angle = angle_;
+		delta_angle = delta_angle_;
+		type = type_;
+		speed_factor = speed_factor_;
+		speed = 3;
+	}
+
+	void run()
+	{
+		int i;
+
+		for (i = 0; i < 20; i++) {
+			angle += delta_angle;
+			speed *= speed_factor;
+			yield;
+		}
+
+		while (1) {
+			speed *= speed_factor;
+			angle += delta_angle;
+			yield;
+		}
+	}
+}

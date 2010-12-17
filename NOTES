@@ -1,0 +1,1 @@
+$ convert bullet-1.png bullet-2.png bullet-3.png bullet-4.png -background "rgba(0, 0, 0, 0)" +append -extent 128x64 bullet.png
